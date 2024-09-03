@@ -21,7 +21,7 @@
 #include "renderHeader.h"
 
 //Vec3
-Vec3::Vec3(double theX = 0, double theY = 0, double theZ = 0){
+Vec3::Vec3(double const theX = 0, double const theY = 0, double const theZ = 0){
     x = theX;
     y = theY;
     z = theZ;
@@ -64,7 +64,7 @@ double Vec3::length(){
 }
 
 //Surface
-Surface::Surface(Vec3 xVars, Vec3 yVars, Vec3 zVars, Bound sBound = {0, 1}, Bound tBound = {0, 1}, char dC = '@'){
+Surface::Surface(Vec3 const& xVars, Vec3 const& yVars, Vec3 const& zVars, Bound const& sBound = {0, 1}, Bound const& tBound = {0, 1}, char dC = '@'){
     X = xVars;
     Y = yVars;
     Z = zVars;
@@ -73,7 +73,7 @@ Surface::Surface(Vec3 xVars, Vec3 yVars, Vec3 zVars, Bound sBound = {0, 1}, Boun
     dispChar = dC;
 }
 
-FlatSurface Surface::cameraTransform(Camera c){ //convert to transform linear combination of s, t + constant point c
+FlatSurface Surface::cameraTransform(Camera const& c){ //convert to transform linear combination of s, t + constant point c
     Vec3 e = c.displaySurface;
 
     Vec3 mx = this->X;
@@ -104,7 +104,7 @@ Vec3 FlatSurface::eval(FlatPoint st){
 }
 
 //FlatSurface
-FlatSurface::FlatSurface(Vec3 dx, Vec3 dy, Vec3 dz, Bound S, Bound T, Camera C, char dC = '@'){
+FlatSurface::FlatSurface(Vec3 const& dx, Vec3 const& dy, Vec3 const& dz, Bound const& S, Bound const& T, Camera const& C, char dC = '@'){
     Dx = dx;
     Dy = dy;
     Dz = dz;
@@ -173,7 +173,7 @@ std::vector<Vec3> Cube::getCubeVertices(const Vec3& center, double lx, double ly
 }
 
 //should generate 3D surface objects
-Cube::Cube(Vec3 center, double x, double y, double z, double ax, double ay, double az){
+Cube::Cube(Vec3 const& center, double x, double y, double z, double ax, double ay, double az){
     
     //generate points
     vertices = getCubeVertices(center, x, y, z, ax, ay, az);
@@ -218,7 +218,7 @@ Cube::Cube(Vec3 center, double x, double y, double z, double ax, double ay, doub
 //World functions
 
 //Display FlatSurfaces submitted given x and y display bounds(inclusive)
-std::string Draw(std::vector<FlatSurface> flatSurfaces, Bound x, Bound y){
+std::string Draw(std::vector<FlatSurface> const& flatSurfaces, Bound const& x, Bound const& y){
     //Iterate through x and y (i, j)
     //For each, use DPE function:
 
@@ -276,7 +276,7 @@ std::string Draw(std::vector<FlatSurface> flatSurfaces, Bound x, Bound y){
     return retStr;
 }
 
-bool doesPointExist(FlatSurface f, FlatPoint p, FlatPoint* st){
+bool doesPointExist(FlatSurface const& f, FlatPoint const& p, FlatPoint* st){
     
     //REWRITE REWRITE REWRITE
     

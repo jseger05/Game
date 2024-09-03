@@ -3,7 +3,6 @@
 
 //--------------------------------------------------------------------
 //TODO: 
-//Look into changing functions that take objects to taking object ptrs -- save memory?
 //Check each angle adjuster to make sense from driver
 //Tweak z-preference?
 //Try implementing sphere
@@ -18,7 +17,7 @@ int main(){
     Camera c{Vec3(0, 0, 4), Vec3(0, 0, 0), Vec3(0, 0, 40)};
 
     std::vector<FlatSurface> flatSurfaces;
-    for(Surface s : theCube.surfaces){
+    for(auto& s : theCube.surfaces){
         flatSurfaces.push_back(s.cameraTransform(c));
     }
 

@@ -53,7 +53,7 @@ class FlatSurface{
         char dispChar;
         Camera c; 
 
-        FlatSurface(Vec3 dx, Vec3 dy, Vec3 dz, Bound S, Bound T, Camera, char);
+        FlatSurface(Vec3 const& dx, Vec3 const& dy, Vec3 const& dz, Bound const& S, Bound const& T, Camera const&, char);
 
         double eval(char, double, double, int);
 
@@ -78,9 +78,9 @@ class Surface{
         //So theoretically some bounds on s and t should define edges?
         //Defines parallelogram!
         //should contain transform method, return FlatSurface
-        Surface(Vec3, Vec3, Vec3, Bound, Bound, char);
+        Surface(Vec3 const&, Vec3 const&, Vec3 const&, Bound const&, Bound const&, char);
 
-        FlatSurface cameraTransform(Camera); //convert to transform linear combination of s, t + constant point c
+        FlatSurface cameraTransform(Camera const&); //convert to transform linear combination of s, t + constant point c
 };
 
 class Cube{
@@ -99,12 +99,12 @@ class Cube{
         std::vector<Vec3> getCubeVertices(const Vec3& center, double lx, double ly, double lz, double roll, double pitch, double yaw);
 
         //Generates 3D surface objects
-        Cube(Vec3 center, double x, double y, double z, double ax, double ay, double az);
+        Cube(Vec3 const& center, double x, double y, double z, double ax, double ay, double az);
 };
 
 //Display FlatSurfaces submitted given x and y display bounds
-std::string Draw(std::vector<FlatSurface>, Bound, Bound);
+std::string Draw(std::vector<FlatSurface> const&, Bound const&, Bound const&);
 //Does a solution exist for some point
-bool doesPointExist(FlatSurface, FlatPoint, FlatPoint*);
+bool doesPointExist(FlatSurface const& , FlatPoint const&, FlatPoint*);
 
 #endif
