@@ -8,6 +8,7 @@
 //Try implementing sphere
 //Start with animated changing frames
 //Change Draw() s t stepping based on camera distance from object?
+//Add documentation to textRender stuff
 //--------------------------------------------------------------------
 
 #include "renderHeader.h"
@@ -26,15 +27,14 @@ int main(){
     return 0;
 }
 
-/*Possible process to figure out z-preference:
-Current procedure: Check if any flat surface has input (s, t) that satisfies (x, y) of interest (Super inefficient!!)
-
-Proposed procedure: (Somehow) Obtain s, t that renders a point and save it and the flat surface that generated it to 
-a temp list. If there is more than one flat surface that generates that point, take the saved s, t and plug it into 
-an eval for the original 3D version of that surface (do this with ptr in flat surface that goes back to generator surface). 
-Calculate distance between plugged output and camera point, use the character of the surface with the lowest distance.
-
-*/
+//-----------------------------------------------------------------
+//Future big steps
+//Project can read in info from text file instead of relying on driver code -->
+//  separate file/header
+//Separate animations file/header
+//Some system for game procedure
+//  If turn-based, modify old Vampire code?
+//-----------------------------------------------------------------
 
 /*Possible process to generate sphere from parallelograms:
 
