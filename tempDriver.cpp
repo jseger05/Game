@@ -3,8 +3,9 @@
 
 //--------------------------------------------------------------------
 //TODO: 
+//Look into changing functions that take objects to taking object ptrs -- save memory?
 //Check each angle adjuster to make sense from driver
-//Tweak z-preference
+//Tweak z-preference?
 //Try implementing sphere
 //Start with animated changing frames
 //Change Draw() s t stepping based on camera distance from object?
