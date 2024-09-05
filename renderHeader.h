@@ -58,7 +58,7 @@ class FlatSurface{
         double eval(char, double, double, int);
 
         //Evaulate returns Vec3(x, y, z) for some (s, t) input
-        Vec3 eval(FlatPoint);
+        Vec3 eval(FlatPoint const&);
 
         std::string print();
 
@@ -98,10 +98,38 @@ class Cube{
         Vec3 rotateY(const Vec3& v, double angle);
         Vec3 rotateZ(const Vec3& v, double angle);
         Vec3 rotate(const Vec3& v, double roll, double pitch, double yaw);
-        std::vector<Vec3> getCubeVertices(const Vec3& center, double lx, double ly, double lz, double roll, double pitch, double yaw);
+        void getCubeVertices(const Vec3& center, double lx, double ly, double lz, double roll, double pitch, double yaw);
 
         //Generates 3D surface objects
         Cube(Vec3 const& center, double x, double y, double z, double ax, double ay, double az);
+};
+
+class Sphere{
+    public:
+        //Not vertices per se, but pts that define our simplified sphere
+        std::vector<Vec3> vertices;
+        //List of N surfaces. N will depend on the granularity parameter passed into the constructor
+        std::vector<Surface> surfaces;
+
+        Vec3 center;
+        Vec3 poleN;
+        Vec3 poleS;
+        Vec3 angRef;
+        int G;
+
+        //Funtions:
+        //Take sphere center and radius -> convert to list of pts
+        //Constructor, takes info and calls... --> have it convert center and pole pts and an angle reference pt with Cube rotate functions
+        //Take vertices, generate surfaces with the parallelograms (written in project notebook)
+        //  Vertices should be in order top to bottom (top is one pole pt), wrapping around from some defined psi=0 (angle reference pt)
+        //  For each (starting one after pole, ending one before pole) draw vector to one layer down, one over and to one over. Use to create surfaces
+        //      Each layer has same # of pts, depending on granularity, so "one layer down" is always the same shift
+
+        Sphere(Vec3 const&, double, Vec3 const&, int);
+        void getSpherePts(double);
+        //rotator functions
+        void generateSurfaces();
+
 };
 
 //Display FlatSurfaces submitted given x and y display bounds

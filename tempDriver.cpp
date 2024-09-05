@@ -3,27 +3,30 @@
 
 //--------------------------------------------------------------------
 //TODO: 
+//Split cube and sphere into their own files?
+//Change from "renderHeader.h" to "textRender.h"
+//Make stuff private/public
 //Check each angle adjuster to make sense from driver
-//Tweak z-preference?
+//Tweak z-preference? -- desmos graph
 //Try implementing sphere
 //Start with animated changing frames
-//Change Draw() s t stepping based on camera distance from object?
+//Lower-quality render for far-away objects?
 //Add documentation to textRender stuff
 //--------------------------------------------------------------------
 
 #include "renderHeader.h"
 
 int main(){
-    Cube theCube(Vec3(0, 0, 0), 2, 2, 2, 0, M_PI/4, M_PI/4);
-    Camera c{Vec3(0, 0, 4), Vec3(0, 0, 0), Vec3(0, 0, 40)};
+    Sphere testSphere(Vec3(0, 0, 0), 4, Vec3(0, 0, 0), 9);
+
+    std::cout << "\nThe points:" << testSphere.vertices.size();
+    std::cout << "\nThe surfaces:" << testSphere.surfaces.size();
+
+    Camera c{Vec3(0, 0, 10), Vec3(0, 0, 0), Vec3(0, 0, 30)};
 
     std::vector<FlatSurface> flatSurfaces;
-    for(auto& s : theCube.surfaces){
+    for(auto& s : testSphere.surfaces){
         flatSurfaces.push_back(s.cameraTransform(c));
-    }
-
-    for(auto& f : flatSurfaces){
-        std::cout << "\n\n" << f.print();
     }
 
     std::cout << Draw(flatSurfaces, {-40, 40}, {-20, 20});

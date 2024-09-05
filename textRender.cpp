@@ -64,10 +64,10 @@ double Vec3::length(){
 }
 
 //Surface
-Surface::Surface(Vec3 const& xVars, Vec3 const& yVars, Vec3 const& zVars, Bound const& sBound = {0, 1}, Bound const& tBound = {0, 1}, char dC = '@'){
-    X = xVars;
-    Y = yVars;
-    Z = zVars;
+Surface::Surface(Vec3 const& a, Vec3 const& b, Vec3 const& p, Bound const& sBound = {0, 1}, Bound const& tBound = {0, 1}, char dC = '@'){
+    X = Vec3(a.x, b.x, p.x);
+    Y = Vec3(a.y, b.y, p.y);
+    Z = Vec3(a.z, b.z, p.z);
     s = sBound;
     t = tBound;
     dispChar = dC;
@@ -117,7 +117,7 @@ std::string FlatSurface::print(){
     return retStr;
 }
 
-Vec3 FlatSurface::eval(FlatPoint st){
+Vec3 FlatSurface::eval(FlatPoint const& st){
     return Vec3(Dx.x*st.x + Dx.y*st.y + Dx.z, 
                 Dx.x*st.x + Dy.y*st.y + Dy.z,
                 Dz.x*st.x + Dz.y*st.y + Dz.z);
@@ -151,7 +151,7 @@ Vec3 Cube::rotate(const Vec3& v, double roll, double pitch, double yaw) {
     return rotated;
 }
 // Function to compute the 8 vertices of the rotated cube
-std::vector<Vec3> Cube::getCubeVertices(const Vec3& center, double lx, double ly, double lz, double roll, double pitch, double yaw) {
+void Cube::getCubeVertices(const Vec3& center, double lx, double ly, double lz, double roll, double pitch, double yaw) {
     // Half lengths
     double hx = lx / 2.0;
     double hy = ly / 2.0;
@@ -177,14 +177,14 @@ std::vector<Vec3> Cube::getCubeVertices(const Vec3& center, double lx, double ly
         vertex.z += center.z;
     }
 
-    return vertices;
+    this->vertices = vertices;
 }
 
 //should generate 3D surface objects
 Cube::Cube(Vec3 const& center, double x, double y, double z, double ax, double ay, double az){
     
-    //generate points
-    vertices = getCubeVertices(center, x, y, z, ax, ay, az);
+    //generate points, assigns them to vertices
+    getCubeVertices(center, x, y, z, ax, ay, az);
 
     //construct
 
@@ -213,14 +213,54 @@ Cube::Cube(Vec3 const& center, double x, double y, double z, double ax, double a
     Vec3 F1 = vertices.at(5) - vertices.at(6);
     Vec3 F2 = vertices.at(7) - vertices.at(6);
 
-    Surface A(Vec3(A1.x, A2.x, vertices.at(0).x), Vec3(A1.y, A2.y, vertices.at(0).y), Vec3(A1.z, A2.z, vertices.at(0).z), {0, 1}, {0, 1}, '/');
-    Surface B(Vec3(B1.x, B2.x, vertices.at(0).x), Vec3(B1.y, B2.y, vertices.at(0).y), Vec3(B1.z, B2.z, vertices.at(0).z), {0, 1}, {0, 1}, '*');
-    Surface C(Vec3(C1.x, C2.x, vertices.at(0).x), Vec3(C1.y, C2.y, vertices.at(0).y), Vec3(C1.z, C2.z, vertices.at(0).z), {0, 1}, {0, 1}, '#');
-    Surface D(Vec3(D1.x, D2.x, vertices.at(6).x), Vec3(D1.y, D2.y, vertices.at(6).y), Vec3(D1.z, D2.z, vertices.at(6).z), {0, 1}, {0, 1}, '%');
-    Surface E(Vec3(E1.x, E2.x, vertices.at(6).x), Vec3(E1.y, E2.y, vertices.at(6).y), Vec3(E1.z, E2.z, vertices.at(6).z), {0, 1}, {0, 1}, 'o');
-    Surface F(Vec3(F1.x, F2.x, vertices.at(6).x), Vec3(F1.y, F2.y, vertices.at(6).y), Vec3(F1.z, F2.z, vertices.at(6).z), {0, 1}, {0, 1}, 'Q');
+    Surface A(A1, A2, vertices.at(0), {0, 1}, {0, 1}, '/');
+    Surface B(B1, B2, vertices.at(0), {0, 1}, {0, 1}, '*');
+    Surface C(C1, C2, vertices.at(0), {0, 1}, {0, 1}, '#');
+    Surface D(D1, D2, vertices.at(6), {0, 1}, {0, 1}, '%');
+    Surface E(E1, E2, vertices.at(6), {0, 1}, {0, 1}, 'o');
+    Surface F(F1, F2, vertices.at(6), {0, 1}, {0, 1}, 'Q');
 
     surfaces = {A, B, C, D, E, F};
+}
+
+Sphere::Sphere(Vec3 const& center, double radius, Vec3 const& tilt, int G){
+    this->poleN = center;
+    this->poleS = center;
+    this->angRef = center;
+    poleN.y+=radius;
+    poleS.y-=radius;
+    angRef.x+=radius;
+    this->G = G;
+
+    getSpherePts(radius);
+    //rotator functions
+    generateSurfaces();
+}
+
+void Sphere::getSpherePts(double radius){
+    vertices.push_back(poleN);
+
+    //One pt for every G/2pi rads
+    for(int i = 1; i < G; i++){
+        for(int j = 0; j <= G; j++){
+            double x = radius*sin(i*M_PI/G)*cos(j*2*M_PI/G);
+            double y = radius*cos(i*M_PI/G);
+            double z = radius*sin(i*M_PI/G)*sin(j*2*M_PI/G);
+            vertices.push_back(center + Vec3(x, y, z));
+        }
+    }
+
+    vertices.push_back(poleS);
+}
+//rotator functions
+void Sphere::generateSurfaces(){
+    char charList[6] = {'/', '*', '#', '%', 'o', 'Q'};
+    
+    for(int i = 1; i < vertices.size()-1-G; i++){
+        Vec3 a = vertices.at(i+1) - vertices.at(i);
+        Vec3 b = vertices.at(i+G) - vertices.at(i);
+        surfaces.push_back(Surface(a, b, vertices.at(i), {0, 1}, {0, 1}, charList[i%6]));
+    }
 }
 
 //World functions
