@@ -60,6 +60,8 @@ class FlatSurface{
         //Evaulate returns Vec3(x, y, z) for some (s, t) input
         Vec3 eval(FlatPoint);
 
+        std::string print();
+
         //double bx = (e.z*dx/dz) + e.x;
         //double by = (e.z*dy/dz) + e.y;
 };

@@ -97,12 +97,6 @@ FlatSurface Surface::cameraTransform(Camera const& c){ //convert to transform li
     return FlatSurface(dx, dy, dz, s, t, c, this->dispChar);
 }
 
-Vec3 FlatSurface::eval(FlatPoint st){
-    return Vec3(Dx.x*st.x + Dx.y*st.y + Dx.z, 
-                Dx.x*st.x + Dy.y*st.y + Dy.z,
-                Dz.x*st.x + Dz.y*st.y + Dz.z);
-}
-
 //FlatSurface
 FlatSurface::FlatSurface(Vec3 const& dx, Vec3 const& dy, Vec3 const& dz, Bound const& S, Bound const& T, Camera const& C, char dC = '@'){
     Dx = dx;
@@ -113,6 +107,20 @@ FlatSurface::FlatSurface(Vec3 const& dx, Vec3 const& dy, Vec3 const& dz, Bound c
     t = T;
     dispChar = dC;
     c = C;
+}
+
+std::string FlatSurface::print(){
+    std::string retStr = "";
+    retStr +=        std::to_string(Dx.x) + "s + " + std::to_string(Dx.y) + "t + " + std::to_string(Dx.z);
+    retStr += "\n" + std::to_string(Dy.x) + "s + " + std::to_string(Dy.y) + "t + " + std::to_string(Dy.z);
+    retStr += "\n" + std::to_string(Dz.x) + "s + " + std::to_string(Dz.y) + "t + " + std::to_string(Dz.z);
+    return retStr;
+}
+
+Vec3 FlatSurface::eval(FlatPoint st){
+    return Vec3(Dx.x*st.x + Dx.y*st.y + Dx.z, 
+                Dx.x*st.x + Dy.y*st.y + Dy.z,
+                Dz.x*st.x + Dz.y*st.y + Dz.z);
 }
 
 //Cube
@@ -240,19 +248,17 @@ std::string Draw(std::vector<FlatSurface> const& flatSurfaces, Bound const& x, B
     for(int i = y.min; i <= y.max; i++){
         std::string thisLine = "\n";
         for(int j = x.min; j <= x.max; j++){
-            std::cout << "\nNext pt";
             //List of candidate st pairs and associated flatsurfaces
             std::vector<FlatPoint> stList;
             std::vector<FlatSurface> fsList;
             for(int h = 0; h < flatSurfaces.size(); h++){
                 FlatPoint st;
                 if(doesPointExist(flatSurfaces.at(h), FlatPoint{double(i), double(j)}, &st)){
-                    std::cout << "\nPoint exists at pt " << st.x << ", " << st.y << " for face " << h;
                     stList.push_back(st);
                     fsList.push_back(flatSurfaces.at(h));
                 }
             }
-            //if size of the list = 0, append " "
+            //If more than one candidate surface, evalutate the originals and choose the lowest distance from cam object
             if(stList.size()==0){
                 thisLine += " ";
             }else{
@@ -260,15 +266,20 @@ std::string Draw(std::vector<FlatSurface> const& flatSurfaces, Bound const& x, B
                 int smallestKey = -1;
                 for(int f = 0; f < fsList.size(); f++){
                     Vec3 vecToCam = (fsList.at(f)).eval(stList.at(f)) - fsList.at(f).c.camPoint;
+                    //bool tempBool = false;
                     if(vecToCam.length() < smallest){
+                        /*if(smallest-vecToCam.length() < 0.1){
+                            std::cout << "\n\nClose call detected: For point (" << i << ", " << j << "), there are " << fsList.size() << " plane options.";
+                            std::cout << "\nConflict is between option " << f << " ("  << fsList.at(f).dispChar << ")" << " and some surface before it. The lengths are " << vecToCam.length() << " and " << smallest << ".";
+                            tempBool=true;
+                        }*/
                         smallestKey = f;
                         smallest = vecToCam.length();
                     }
+                    //if(tempBool){std::cout << "\nWinner is " << fsList.at(smallestKey).dispChar;}
                 }
                 thisLine += fsList.at(smallestKey).dispChar;
             }
-            //Otherwise, eval each fs's 3D counterparts with st
-            //Append char of the surface-pt the least distance from the camera pt
         }
         retStr += thisLine;
     }

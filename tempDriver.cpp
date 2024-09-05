@@ -22,6 +22,10 @@ int main(){
         flatSurfaces.push_back(s.cameraTransform(c));
     }
 
+    for(auto& f : flatSurfaces){
+        std::cout << "\n\n" << f.print();
+    }
+
     std::cout << Draw(flatSurfaces, {-40, 40}, {-20, 20});
 
     return 0;
