@@ -1,35 +1,53 @@
 //Temporary driver code to test out the "textRender.cpp" file
 //Camera math assumes facing XY plane with Y-axis horizontal!
 
+//Anim logic:
+//Will need to have one part of program rendering frames, while other takes user input
+//Anim function can take reference to an object attribute as a parameter + another parameter for a 
+//  change in value + another parameter for how many frames to do it in
+//  So if I want to change the x position of a Cube from 0 to 8 over 20 frames, the call would be animChange(&theCube.center.x, 8, 20)
+//  May need to use a template for this?
+//Within the loop generating frames, there will need to be a queue of object changes
+
 //--------------------------------------------------------------------
 //TODO: 
-//Split cube and sphere into their own files?
+//Separate generate surface code from constructors so it can be re-called without deleting the object
 //Change from "renderHeader.h" to "textRender.h"
 //Make stuff private/public
 //Check each angle adjuster to make sense from driver
 //Tweak z-preference? -- desmos graph
-//Try implementing sphere
 //Start with animated changing frames
 //Lower-quality render for far-away objects?
 //Add documentation to textRender stuff
+//Ability to read in from file
 //--------------------------------------------------------------------
 
-#include "renderHeader.h"
+#include "textRender.h"
+#include "anim.h"
 
 int main(){
-    Sphere testSphere(Vec3(0, 0, 0), 4, Vec3(0, 0, 0), 9);
-
-    std::cout << "\nThe points:" << testSphere.vertices.size();
-    std::cout << "\nThe surfaces:" << testSphere.surfaces.size();
+    Sphere testSphere(Vec3(0, 0, 0), 4, Vec3(0, 0, 0), 10);
 
     Camera c{Vec3(0, 0, 10), Vec3(0, 0, 0), Vec3(0, 0, 30)};
 
     std::vector<FlatSurface> flatSurfaces;
-    for(auto& s : testSphere.surfaces){
-        flatSurfaces.push_back(s.cameraTransform(c));
-    }
 
-    std::cout << Draw(flatSurfaces, {-40, 40}, {-20, 20});
+    //testing animation
+    for(int i = 0; i < 20; i++){
+        flatSurfaces.clear();
+        clear_screen(' ');
+
+        c.camPoint.z+=1;
+
+        for(auto& s : testSphere.surfaces){
+            flatSurfaces.push_back(s.cameraTransform(c));
+        }
+
+        std::cout << Draw(flatSurfaces, {-40, 40}, {-20, 20});
+
+        wait(50);
+
+    }
 
     return 0;
 }

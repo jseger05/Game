@@ -18,7 +18,7 @@
 //b_y = (e_z*d_y/d_z) + e_y
 //Then do whatever clipping is needed to fit the 2d points on the display plane
 
-#include "renderHeader.h"
+#include "textRender.h"
 
 //Vec3
 Vec3::Vec3(double const theX = 0, double const theY = 0, double const theZ = 0){
@@ -258,7 +258,7 @@ void Sphere::generateSurfaces(){
     
     for(int i = 1; i < vertices.size()-1-G; i++){
         Vec3 a = vertices.at(i+1) - vertices.at(i);
-        Vec3 b = vertices.at(i+G) - vertices.at(i);
+        Vec3 b = vertices.at(i+G+1) - vertices.at(i);
         surfaces.push_back(Surface(a, b, vertices.at(i), {0, 1}, {0, 1}, charList[i%6]));
     }
 }
