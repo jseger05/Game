@@ -11,6 +11,7 @@
 
 //--------------------------------------------------------------------
 //TODO: 
+//Surfaces only transform if object is within viewing-180 of camera
 //Make Cube take Vec3 for sides, angles
 //Clean up textRender stuff
 //  Make stuff private/public
@@ -27,7 +28,7 @@
 
 int main(){
     Sphere testSphere(Vec3(0, 0, 0), 4, Vec3(0, 0, 0), 10);
-    Cube testCube(Vec3(0, 0, 60), 8, 8, 8, 0, 0, 0);
+    Cube testCube(Vec3(0, 0, 60), 6, 6, 6, 0, 0, 0);
 
     Camera c{Vec3(0, 0, 10), Vec3(0, 0, 0), Vec3(0, 0, 30)};
 
@@ -56,8 +57,28 @@ int main(){
 
         c.camAngle.x += (M_PI/20.0);
         for(auto& s : testSphere.surfaces){
-            flatSurfaces.push_back(s.cameraTransform(c));
+            if(s.isInView(c)){
+                flatSurfaces.push_back(s.cameraTransform(c));
+            }
         }
+        for(auto& s : testCube.surfaces){
+            if(s.isInView(c)){
+                flatSurfaces.push_back(s.cameraTransform(c));
+            }
+        }
+
+        std::cout << Draw(flatSurfaces, {-40, 40}, {-20, 20});
+
+        wait(50);
+
+    }
+    
+    for(int i = 0; i < 20; i++){
+        flatSurfaces.clear();
+        clear_screen(' ');
+
+        c.camPoint.z+=1;
+
         for(auto& s : testCube.surfaces){
             flatSurfaces.push_back(s.cameraTransform(c));
         }
@@ -67,7 +88,6 @@ int main(){
         wait(50);
 
     }
-    //another for to zoom in on cube
 
     return 0;
 }

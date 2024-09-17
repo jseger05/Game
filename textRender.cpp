@@ -97,6 +97,33 @@ FlatSurface Surface::cameraTransform(Camera const& c){ //convert to transform li
     return FlatSurface(dx, dy, dz, s, t, c, this->dispChar);
 }
 
+bool Surface::isInView(Camera const& c){
+    //transforms origin pt of surface. If in view (in camera coords, is at Z<=0), returns true
+    //Less than zero purely for convenience. Can be switched with no real effect
+    Vec3 e = c.displaySurface;
+
+    double mx = X.z;
+    double my = Y.z;
+    double mz = Z.z;
+            
+    mx -= c.camPoint.x;
+    my -= c.camPoint.y;
+    mz -= c.camPoint.z;
+    double sx = sin(c.camAngle.x);
+    double sy = sin(c.camAngle.y);
+    double sz = sin(c.camAngle.z);
+    double cx = cos(c.camAngle.x);
+    double cy = cos(c.camAngle.y);
+    double cz = cos(c.camAngle.z);
+
+    double dz = (mz*cy + (my*sz + mx*cz)*sy)*cx - (my*cz - mx*sz)*sx;
+
+    if(dz <= 0){
+        return true;
+    }
+    return false;
+}
+
 //FlatSurface
 FlatSurface::FlatSurface(Vec3 const& dx, Vec3 const& dy, Vec3 const& dz, Bound const& S, Bound const& T, Camera const& C, char dC = '@'){
     Dx = dx;

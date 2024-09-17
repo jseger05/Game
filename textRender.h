@@ -83,6 +83,7 @@ class Surface{
         Surface(Vec3 const&, Vec3 const&, Vec3 const&, Bound const&, Bound const&, char);
 
         FlatSurface cameraTransform(Camera const&); //convert to transform linear combination of s, t + constant point c
+        bool isInView(Camera const&);
 };
 
 class Cube{
