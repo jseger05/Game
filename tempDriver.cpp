@@ -11,11 +11,11 @@
 
 //--------------------------------------------------------------------
 //TODO: 
-//Surfaces only transform if object is within viewing-180 of camera
-//Make Cube take Vec3 for sides, angles
+//Fully implement drawFrame in Anim
 //Clean up textRender stuff
 //  Make stuff private/public
 //  Add documentation to textRender stuff
+//  Make Cube take Vec3 for sides, angles
 //Check each angle adjuster to make sense from driver
 //Tweak z-preference? -- desmos graph
 //Start with animated changing frames
