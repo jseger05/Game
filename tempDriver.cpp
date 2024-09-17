@@ -11,14 +11,14 @@
 
 //--------------------------------------------------------------------
 //TODO: 
-//Separate generate surface code from constructors so it can be re-called without deleting the object
-//Change from "renderHeader.h" to "textRender.h"
-//Make stuff private/public
+//Make Cube take Vec3 for sides, angles
+//Clean up textRender stuff
+//  Make stuff private/public
+//  Add documentation to textRender stuff
 //Check each angle adjuster to make sense from driver
 //Tweak z-preference? -- desmos graph
 //Start with animated changing frames
 //Lower-quality render for far-away objects?
-//Add documentation to textRender stuff
 //Ability to read in from file
 //--------------------------------------------------------------------
 
@@ -27,6 +27,7 @@
 
 int main(){
     Sphere testSphere(Vec3(0, 0, 0), 4, Vec3(0, 0, 0), 10);
+    Cube testCube(Vec3(0, 0, 60), 8, 8, 8, 0, 0, 0);
 
     Camera c{Vec3(0, 0, 10), Vec3(0, 0, 0), Vec3(0, 0, 30)};
 
@@ -49,6 +50,25 @@ int main(){
 
     }
 
+    for(int i = 0; i < 20; i++){
+        flatSurfaces.clear();
+        clear_screen(' ');
+
+        c.camAngle.x += (M_PI/20.0);
+        for(auto& s : testSphere.surfaces){
+            flatSurfaces.push_back(s.cameraTransform(c));
+        }
+        for(auto& s : testCube.surfaces){
+            flatSurfaces.push_back(s.cameraTransform(c));
+        }
+
+        std::cout << Draw(flatSurfaces, {-40, 40}, {-20, 20});
+
+        wait(50);
+
+    }
+    //another for to zoom in on cube
+
     return 0;
 }
 
@@ -60,13 +80,3 @@ int main(){
 //Some system for game procedure
 //  If turn-based, modify old Vampire code?
 //-----------------------------------------------------------------
-
-/*Possible process to generate sphere from parallelograms:
-
-Divide degrees of sphere (theta and psi) into number of parallelo faces to generate per pi-radian. 
-For each pi-radian chunk, cast a line from center to surface and draw paralellogram tangent to surface -- size? 
-Maybe at each cast line draw a vector, and then assemble vectors after?
-
-Sketch on paper
-
-*/

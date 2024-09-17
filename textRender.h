@@ -102,6 +102,7 @@ class Cube{
 
         //Generates 3D surface objects
         Cube(Vec3 const& center, double x, double y, double z, double ax, double ay, double az);
+        void cubeSurfaces();
 };
 
 class Sphere{

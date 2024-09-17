@@ -185,9 +185,10 @@ Cube::Cube(Vec3 const& center, double x, double y, double z, double ax, double a
     
     //generate points, assigns them to vertices
     getCubeVertices(center, x, y, z, ax, ay, az);
+    cubeSurfaces();
+}
 
-    //construct
-
+void Cube::cubeSurfaces(){
     //Central A
     //A
     //B
